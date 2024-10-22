@@ -1,8 +1,12 @@
 //FRAMEWORK CONFIGURATION
 const express = require('express');
 const connectDb=require("./config/dbConnection");
-const errorHandler=require("./middleware/errorHandler");
+const errorHandler=require("./middlewares/errorHandler");
 const cors=require("cors");
+
+//env file configuration
+const dotenv=require("dotenv");
+dotenv.config();
 
 connectDb();
 const app= express();
@@ -12,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/',(req,res)=>{
-    res.send("working");
+    res.send("working");  
 })
 
 app.use(errorHandler);
