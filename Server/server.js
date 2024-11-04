@@ -3,6 +3,8 @@ const express = require('express');
 const connectDb=require("./config/dbConnection");
 const errorHandler=require("./middlewares/errorHandler");
 const cors=require("cors");
+const hbs = require("hbs");
+const path = require("path");
 
 //env file configuration
 const dotenv=require("dotenv");
@@ -35,6 +37,13 @@ app.get('/allusers',(req,res)=>{
 })
 
 app.use(errorHandler);
+
+//register route
+app.use("/api/register" , require("./routes/userRoutes"));
+
+app.use("/api/registerDocter", require("./routes/doctorsDetails"));
+
+
 
 app.listen(port,() => {
     console.log(`Server running on port http://localhost:${port}`);
