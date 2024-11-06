@@ -6,6 +6,7 @@ const cors=require("cors");
 const hbs = require("hbs");
 const path = require("path");
 const multer  = require('multer');
+const File = require('./model/file');
 // const upload = multer({ dest: 'uploads/' });
 
 //env file configuration
@@ -56,6 +57,38 @@ const storage = multer.diskStorage({
     })
 
     const upload = multer({ storage: storage })
+
+
+    app.get("/home", async (req, res) => {
+        // Fetch all uploaded files from MongoDB
+        const files = await File.find();
+        res.render("home", {
+            username: "xyz",
+            users: [{ name: "blahblah", age: 30 }, { name: "abc", age: 25 }],
+            files: files // Pass files to the template
+        });
+    });
+    
+    // Route to handle file upload and save metadata in MongoDB
+    app.post('/profile', upload.single('avatar'), async (req, res) => {
+        try {
+            // Create a new file record in MongoDB
+            const fileData = new File({
+                originalName: req.file.originalname,
+                filename: req.file.filename,
+                path: req.file.path,
+                size: req.file.size,
+            });
+    
+            await fileData.save(); // Save metadata to MongoDB
+            console.log("File metadata saved:", fileData);
+    
+            return res.redirect("/home");
+        } catch (error) {
+            console.error("Error uploading file:", error);
+            res.status(500).send("Error uploading file.");
+        }
+    });
 
 //using multer 
 app.post('/profile', upload.single('avatar'), function (req, res, next) {
