@@ -46,6 +46,8 @@ app.use("/api/register" , require("./routes/userRoutes"));
 
 app.use("/api/registerDocter", require("./routes/doctorsDetails"));
 
+app.use("/api/newsletter", require("./routes/newsletter"));
+
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, "./uploads")
