@@ -127,4 +127,40 @@ const loginUser = asyncHandler(async (req, res) => {
     res.json({ message: "Login successful", token });
 });
 
-module.exports = { registerUser, loginUser };
+const myDetails = async(req,res)=>{
+    const id = req.user.id;
+    const userExists = await user.findById(id);
+    if(userExists){
+        res.send({userExists});
+    }else{
+        res.status(404).json({message:"user not found"});
+    }
+};
+
+const updateUser = asyncHandler(async (req, res) => {
+    const userId = req.user.id;  // Get user ID from req.user (set by JWT middleware)
+    
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields with the data provided in the request body
+    const { firstName, lastName, age, gender, bloodGroup, email, phoneNumber } = req.body;
+
+    user.firstName = firstName || user.firstName;
+    user.lastName = lastName || user.lastName;
+    user.age = age || user.age;
+    user.gender = gender || user.gender;
+    user.bloodGroup = bloodGroup || user.bloodGroup;
+    user.email = email || user.email;
+    user.phoneNumber = phoneNumber || user.phoneNumber;
+
+    // Save the updated user data
+    const updatedUser = await user.save();
+
+    res.json({ message: "User updated successfully", user: updatedUser });
+});
+
+module.exports = { registerUser, loginUser, myDetails, updateUser };
